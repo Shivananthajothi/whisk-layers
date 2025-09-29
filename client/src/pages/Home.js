@@ -1,27 +1,36 @@
 import React, { useEffect, useState } from "react";
 import api from "../api";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
+function imageUrl(img) {
+  if (!img) return "/images/cake1.jpg";
+  if (img.startsWith("http") || img.startsWith("/")) return img;
+  return `/images/${img}`;
+}
 
 export default function Home(){
   const [products, setProducts] = useState([]);
+  const nav = useNavigate();
 
   useEffect(()=> {
-    api.get("/products").then(res => setProducts(res.data)).catch(console.error);
+    let mounted = true;
+    api.get("/products")
+      .then(res => { if (mounted) setProducts(res.data || []); })
+      .catch(err => console.error(err));
+    return ()=> mounted = false;
   }, []);
 
   return (
     <div className="container">
-      <h2>Popular Cakes</h2>
+      <h2>Our Cakes</h2>
       <div className="product-grid">
         {products.map(p => (
-          <div className="product-card card" key={p._id}>
-            <img src={`http://localhost:5000${p.image}`} alt={p.name} />
-            <h3>{p.name}</h3>
-            <p>{p.description}</p>
-            <p style={{fontWeight:700}}>₹{p.price}</p>
-            <div style={{display:'flex', gap:8, marginTop:8}}>
-              <Link className="btn" to={`/product/${p._id}`}>View</Link>
-              <Link className="btn btn-secondary" to={`/customize/${p._id}`}>Customize</Link>
+          <div key={p._id} className="product-card" onClick={()=>nav(`/product/${p._id}`)}>
+            <img src={imageUrl(p.image)} alt={p.name} />
+            <div className="meta">
+              <h3>{p.name}</h3>
+              <p className="small">{p.description}</p>
+              <p style={{fontWeight:700, marginTop:8}}>₹{p.price}</p>
             </div>
           </div>
         ))}

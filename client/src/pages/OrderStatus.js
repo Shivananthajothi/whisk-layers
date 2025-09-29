@@ -1,15 +1,12 @@
 import React, { useEffect, useState } from "react";
-import api from "../api";
 import { useParams } from "react-router-dom";
+import api from "../api";
 
 export default function OrderStatus(){
   const { id } = useParams();
   const [order, setOrder] = useState(null);
-
   useEffect(()=> {
-    const token = localStorage.getItem('token');
-    if (!token) return;
-    api.get(`/orders/${id}`, { headers: { 'x-auth-token': token }}).then(r => setOrder(r.data)).catch(console.error);
+    api.get(`/orders/${id}`).then(r => setOrder(r.data)).catch(err => console.error(err));
   }, [id]);
 
   if (!order) return <div className="container">Loading...</div>;
@@ -20,7 +17,7 @@ export default function OrderStatus(){
       <p>Status: {order.status}</p>
       <h3>Items</h3>
       <ul>
-        {order.items.map((it, idx) => <li key={idx}>{it.name} x {it.qty}</li>)}
+        {order.items.map((it, i) => <li key={i}>{it.name || it.productId} x {it.qty || it.quantity}</li>)}
       </ul>
     </div>
   );

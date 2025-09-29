@@ -1,11 +1,12 @@
 import React from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import BottomNav from "./components/BottomNav";
 
-import BakerySelect from "./pages/BakerySelect";
+import Splash from "./pages/Splash";
 import Landing from "./pages/Landing";
 import Home from "./pages/Home";
+import BakerySelect from "./pages/BakerySelect";
 import Product from "./pages/Product";
 import Customization from "./pages/Customization";
 import Cart from "./pages/Cart";
@@ -17,7 +18,6 @@ import Inbox from "./pages/Inbox";
 import Profile from "./pages/Profile";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import Splash from "./pages/Splash";
 
 import "./styles/global.css";
 import "./App.css";
@@ -27,10 +27,10 @@ function App() {
     <BrowserRouter>
       <Navbar />
       <Routes>
-        <Route path="/bakeries" element={<BakerySelect />} />
         <Route path="/" element={<Splash />} />
         <Route path="/landing" element={<Landing />} />
         <Route path="/home" element={<Home />} />
+        <Route path="/bakeries" element={<BakerySelect />} />
         <Route path="/product/:id" element={<Product />} />
         <Route path="/customize/:id" element={<Customization />} />
         <Route path="/cart" element={<Cart />} />
@@ -42,6 +42,7 @@ function App() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="*" element={<Navigate to="/home" replace />} />
       </Routes>
       <BottomNav />
     </BrowserRouter>
