@@ -1,0 +1,21 @@
+/* client/src/App.css - minor layout tweaks + color helpers */
+
+body { background: var(--bg); }
+
+/* top container spacing */
+.container { padding-top: 6px; }
+
+/* small helpers */
+.muted { color: var(--muted); }
+.small { font-size:12px; color:var(--muted); }
+
+/* ensure images not overflow */
+img { max-width:100%; display:block; }
+
+/* Make CTA sizes consistent */
+.btn, .btn-secondary { font-size:14px; }
+
+/* add spacing for mobile bottom nav */
+@media (max-width:600px){
+  body { padding-bottom:80px; } /* room for bottom nav */
+}
