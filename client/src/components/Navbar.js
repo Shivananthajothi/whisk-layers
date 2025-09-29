@@ -6,7 +6,7 @@ export default function Navbar() {
   return (
     <header className="topbar">
       <div className="logo">
-        <img src="/images/logo.jpg" className="logo-small" alt="logo" />
+        <img src="/images/logo.png" className="logo-small" alt="logo" />
         <div>
           <div style={{fontWeight:700}}>Whisk Layers</div>
           <div style={{fontSize:12,color:'#666'}}>Delightful Bakes</div>
