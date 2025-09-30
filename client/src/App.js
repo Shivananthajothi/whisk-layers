@@ -2,7 +2,6 @@ import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import BottomNav from "./components/BottomNav";
-
 import Splash from "./pages/Splash";
 import Landing from "./pages/Landing";
 import Home from "./pages/Home";
@@ -18,11 +17,10 @@ import Inbox from "./pages/Inbox";
 import Profile from "./pages/Profile";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-
 import "./styles/global.css";
 import "./App.css";
 
-function App() {
+function App(){
   return (
     <BrowserRouter>
       <Navbar />

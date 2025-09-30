@@ -1,14 +1,21 @@
+// server/models/Order.js
 import mongoose from "mongoose";
 
-const orderSchema = new mongoose.Schema({
+const OrderSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-  products: [
+  items: [
     {
       productId: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
-      quantity: Number
+      name: String,
+      price: Number,
+      qty: Number,
+      customization: String
     }
   ],
-  status: { type: String, default: "Pending" }
-});
+  total: Number,
+  address: String,
+  status: { type: String, default: "Placed" }, // Placed, Processing, Out for Delivery, Delivered
+  payment: { type: String, default: "Pending" } // Paid / Pending
+}, { timestamps: true });
 
-export default mongoose.model("Order", orderSchema);
+export default mongoose.model("Order", OrderSchema);

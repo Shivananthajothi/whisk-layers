@@ -8,10 +8,10 @@ export default function Landing(){
       <div className="hero">
         <div className="hero-left">
           <h1 style={{fontSize:34,color:'#8b1533'}}>Delightful Crafted Creations</h1>
-          <p style={{color:'#6b6b6b',marginTop:10}}>Choose from handcrafted cakes and sweets made by local bakers. Customize and order in few clicks.</p>
+          <p style={{color:'#6b6b6b',marginTop:10}}>Choose handcrafted cakes and sweets from local bakers. Customize & order easily.</p>
           <div style={{marginTop:18}}>
             <button className="btn" onClick={()=>nav('/home')}>Shop Now</button>
-            <button className="btn btn-secondary" style={{marginLeft:12}} onClick={()=>nav('/register')}>Sign Up</button>
+            <button className="btn" style={{marginLeft:12,background:'#ff6f8e'}} onClick={()=>nav('/register')}>Sign Up</button>
           </div>
         </div>
         <div className="hero-right">

@@ -1,11 +1,10 @@
+// server/models/Bakery.js
 import mongoose from "mongoose";
 
-const bakerySchema = new mongoose.Schema({
-  name: { type: String, required: true },
+const BakerySchema = new mongoose.Schema({
+  name: String,
   location: String,
-  image: String,
-  description: String,
-  products: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }]
-});
+  image: String
+}, { timestamps: true });
 
-export default mongoose.model("Bakery", bakerySchema);
+export default mongoose.model("Bakery", BakerySchema);

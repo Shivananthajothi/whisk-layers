@@ -1,9 +1,9 @@
+// server/routes/cartRoutes.js
 import express from "express";
-import { addToCart } from "../controllers/cartController.js";
-import auth from "../middleware/authMiddleware.js";
-
+import { auth } from "../middleware/authMiddleware.js";
+import { getCart, add, clear } from "../controllers/cartController.js";
 const router = express.Router();
-
-router.post("/add", auth, addToCart);
-
+router.get("/", auth, getCart);
+router.post("/add", auth, add);
+router.delete("/clear", auth, clear);
 export default router;

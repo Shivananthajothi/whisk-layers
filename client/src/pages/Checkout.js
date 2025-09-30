@@ -1,39 +1,37 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import API from "../api";
 import { useNavigate } from "react-router-dom";
-import api from "../api";
 
 export default function Checkout(){
-  const [form, setForm] = useState({ address: "", phone: "" });
-  const navigate = useNavigate();
+  const [address, setAddress] = useState("");
+  const [items, setItems] = useState([]);
+  const nav = useNavigate();
 
-  const placeOrder = async () => {
+  useEffect(()=> {
+    API.get("/cart").then(r => setItems(r.data.items || [])).catch(console.error);
+  }, []);
+
+  const total = items.reduce((s,it)=> s + (it.price || 0) * (it.qty || 1), 0);
+
+  const payNow = async () => {
     try {
-      const cartRes = await api.get('/cart'); // expect items in response
-      const items = (cartRes.data.items || cartRes.data.products || []);
-      // convert to order shape expected by backend
-      const orderItems = items.map(it => ({
-        productId: it.productId || it.productId?._id || it._id,
-        qty: it.qty || it.quantity || 1
-      }));
-      const total = orderItems.reduce((s, it) => s + (it.price || 0) * it.qty, 0);
-      const res = await api.post('/orders', { items: orderItems, total, address: form.address });
-      // clear cart on server
-      await api.delete('/cart/clear');
-      navigate(`/success?orderId=${res.data._id}`);
+      // Dummy payment: create order in backend which marks as Paid
+      const res = await API.post("/orders", { address });
+      nav(`/success?orderId=${res.data.order._id}`);
     } catch (err) {
       console.error(err);
-      alert(err.response?.data?.msg || "Checkout failed");
+      alert("Order failed");
     }
   };
 
   return (
     <div className="container">
       <h2>Checkout</h2>
-      <div className="card" style={{maxWidth:600}}>
-        <input className="form-input" placeholder="Phone" value={form.phone} onChange={e=>setForm({...form, phone:e.target.value})}/>
-        <textarea className="form-input" placeholder="Delivery address" value={form.address} onChange={e=>setForm({...form, address:e.target.value})} />
+      <div className="card" style={{maxWidth:720}}>
+        <textarea className="form-input" placeholder="Delivery address" value={address} onChange={e=>setAddress(e.target.value)} />
+        <h3>Total: ₹{total}</h3>
         <div style={{textAlign:'right'}}>
-          <button className="btn" onClick={placeOrder}>Pay & Place Order</button>
+          <button className="btn" onClick={payNow}>Pay & Place Order</button>
         </div>
       </div>
     </div>

@@ -1,57 +1,45 @@
 import React, { useEffect, useState } from "react";
+import API from "../api";
 import { useNavigate } from "react-router-dom";
-import api from "../api";
-
-function normalizeCartPayload(data){
-  // backend may return { items: [...] } or { products: [...] }
-  if (!data) return { items: [] };
-  if (Array.isArray(data.items)) return { items: data.items };
-  if (Array.isArray(data.products)) {
-    // map { productId, quantity } into richer items if product data not included
-    return { items: data.products.map(p => ({ productId: p.productId, qty: p.quantity, name: p.name, price: p.price })) };
-  }
-  // fallback
-  return { items: data.items || [] };
-}
 
 export default function Cart(){
-  const [cart, setCart] = useState({ items: [] });
+  const [items, setItems] = useState([]);
   const nav = useNavigate();
 
-  const fetchCart = async () => {
+  const load = async () => {
     try {
-      const res = await api.get('/cart');
-      setCart(normalizeCartPayload(res.data));
+      const res = await API.get("/cart");
+      setItems(res.data.items || []);
     } catch (err) {
       console.error(err);
-      if (err.response && err.response.status === 401) nav('/login');
+      if (err.response?.status === 401) nav("/login");
     }
   };
 
-  useEffect(()=> { fetchCart(); }, []);
+  useEffect(()=> { load(); }, []);
 
-  const total = (cart.items || []).reduce((s, it) => s + (it.price || 0) * (it.qty || it.quantity || 1), 0);
+  const total = items.reduce((s,it)=> s + (it.price || 0) * (it.qty || 1), 0);
 
   return (
     <div className="container">
       <h2>Your Cart</h2>
       <div className="card">
-        {(!cart.items || cart.items.length === 0) ? (
-          <div style={{textAlign:'center', padding:40}}>
+        {items.length === 0 ? (
+          <div style={{textAlign:'center',padding:40}}>
             <img src="/images/empty-cart.png" alt="empty" style={{width:180}}/>
-            <p className="small">Your cart is empty</p>
+            <p style={{color:'#6b6b6b'}}>Your cart is empty</p>
           </div>
         ) : (
           <>
-            {cart.items.map((it, idx) => (
+            {items.map((it, idx)=> (
               <div key={idx} className="cart-item">
                 <div>
-                  <b>{it.name || it.title || 'Product'}</b>
-                  <div className="small">{it.customization}</div>
+                  <b>{it.name}</b>
+                  <div style={{color:'#6b6b6b'}}>{it.customization}</div>
                 </div>
                 <div style={{textAlign:'right'}}>
-                  <div>Qty: {it.qty || it.quantity || 1}</div>
-                  <div>₹{it.price || 0}</div>
+                  <div>Qty: {it.qty}</div>
+                  <div>₹{it.price}</div>
                 </div>
               </div>
             ))}
