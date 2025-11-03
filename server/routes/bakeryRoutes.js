@@ -1,6 +1,6 @@
 // server/routes/bakeryRoutes.js
 import express from "express";
-import { list } from "../controllers/bakeryController.js";
+import { listBakeries } from "../controllers/bakeryController.js";
 const router = express.Router();
-router.get("/", list);
+router.get("/", listBakeries);
 export default router;

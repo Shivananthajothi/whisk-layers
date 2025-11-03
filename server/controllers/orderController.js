@@ -2,58 +2,57 @@
 import Order from "../models/Order.js";
 import Cart from "../models/Cart.js";
 
-export const create = async (req, res) => {
+export const createOrder = async (req, res) => {
   try {
-    const userId = req.user;
+    const userId = req.user.id;
     const { address } = req.body;
-    const cart = await Cart.findOne({ userId }).populate("products.productId");
-    if (!cart || cart.products.length === 0) return res.status(400).json({ msg: "Cart empty" });
+    const cart = await Cart.findOne({ user: userId }).populate("items.product");
+    if (!cart || cart.items.length === 0) return res.status(400).json({ message: "Cart empty" });
 
-    const items = cart.products.map(p => ({
-      productId: p.productId._id,
-      name: p.productId.name,
-      price: p.productId.price,
-      qty: p.quantity,
-      customization: p.customization || ""
+    const items = cart.items.map(i => ({
+      product: i.product._id,
+      name: i.product.name,
+      price: i.product.price,
+      qty: i.quantity,
+      customization: i.customization || ""
     }));
+
     const total = items.reduce((s, it) => s + (it.price * it.qty), 0);
 
-    // create order as Paid (since we're using dummy payment)
     const order = new Order({
-      userId,
+      user: userId,
       items,
       total,
       address,
       status: "Placed",
-      payment: "Paid"
+      paymentStatus: "Paid"
     });
+
     await order.save();
-
-    // clear cart
-    await Cart.findOneAndDelete({ userId });
-
+    await Cart.findOneAndDelete({ user: userId });
     res.status(201).json({ order });
   } catch (err) {
-    res.status(500).json({ msg: "Server error" });
+    res.status(500).json({ message: "Failed to create order" });
   }
 };
 
-export const list = async (req, res) => {
+export const getOrders = async (req, res) => {
   try {
-    const userId = req.user;
-    const orders = await Order.find({ userId }).sort({ createdAt: -1 });
+    const userId = req.user.id;
+    const orders = await Order.find({ user: userId }).sort({ createdAt: -1 });
     res.json(orders);
   } catch (err) {
-    res.status(500).json({ msg: "Server error" });
+    res.status(500).json({ message: "Failed to fetch orders" });
   }
 };
 
-export const getById = async (req, res) => {
+export const getOrder = async (req, res) => {
   try {
     const order = await Order.findById(req.params.id);
-    if (!order) return res.status(404).json({ msg: "Not found" });
+    if (!order) return res.status(404).json({ message: "Order not found" });
+    if (order.user.toString() !== req.user.id) return res.status(403).json({ message: "Not authorized" });
     res.json(order);
   } catch (err) {
-    res.status(500).json({ msg: "Server error" });
+    res.status(500).json({ message: "Failed to fetch order" });
   }
 };

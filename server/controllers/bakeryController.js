@@ -1,11 +1,11 @@
 // server/controllers/bakeryController.js
 import Bakery from "../models/Bakery.js";
 
-export const list = async (req, res) => {
+export const listBakeries = async (req, res) => {
   try {
-    const bakeries = await Bakery.find().sort({ createdAt: -1 });
+    const bakeries = await Bakery.find();
     res.json(bakeries);
   } catch (err) {
-    res.status(500).json({ msg: "Server error" });
+    res.status(500).json({ message: "Failed to fetch bakeries" });
   }
 };
