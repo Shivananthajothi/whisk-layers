@@ -9,7 +9,7 @@ import Product from "./pages/Product";
 import Customization from "./pages/Customization";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
-import PaymentSuccess from "./pages/PaymentSuccess";
+import PaymentSuccess from "./pages/PaymentSuccess"; // <-- Used for the new status page
 import OrderTracker from "./pages/OrderTracker";
 import OrderStatus from "./pages/OrderStatus";
 import Inbox from "./pages/Inbox";
@@ -24,33 +24,39 @@ import "./styles/global.css";
 import "./App.css";
 
 export default function App(){
-  return (
-    <BrowserRouter>
-      <Navbar />
-      <Routes>
-        {/* Splash as the initial screen */}
-        <Route path="/" element={<Splash />} />
-        <Route path="/landing" element={<Landing />} />
+    return (
+        <BrowserRouter>
+            <Navbar />
+            <Routes>
+                {/* Splash as the initial screen */}
+                <Route path="/" element={<Splash />} />
+                <Route path="/landing" element={<Landing />} />
 
-        <Route path="/home" element={<Home />} />
-        <Route path="/bakeries" element={<BakeryList />} />
-        <Route path="/bakery/:id" element={<BakeryProducts />} />
-        <Route path="/product/:id" element={<Product />} />
-        <Route path="/customize/:id" element={<Customization />} />
-        <Route path="/cart" element={<Cart />} />
-        <Route path="/checkout" element={<Checkout />} />
-        <Route path="/success" element={<PaymentSuccess />} />
-        <Route path="/orders" element={<OrderTracker />} />
-  <Route path="/order/:id" element={<OrderStatus />} />
-  <Route path="/order-status/:id" element={<OrderStatus />} />
-        <Route path="/inbox" element={<Inbox />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+                <Route path="/home" element={<Home />} />
+                <Route path="/bakeries" element={<BakeryList />} />
+                <Route path="/bakery/:id" element={<BakeryProducts />} />
+                <Route path="/product/:id" element={<Product />} />
+                <Route path="/customize/:id" element={<Customization />} />
+                <Route path="/cart" element={<Cart />} />
+                <Route path="/checkout" element={<Checkout />} />
+                <Route path="/success" element={<PaymentSuccess />} />
+                <Route path="/orders" element={<OrderTracker />} />
+                <Route path="/order/:id" element={<OrderStatus />} />
+                
+                {/* CRITICAL CHANGE:
+                  The Order-Status route is now handled by the updated PaymentSuccess component,
+                  which is responsible for fetching and displaying the final order and payment status.
+                */}
+                <Route path="/order-status/:id" element={<PaymentSuccess />} /> 
+                
+                <Route path="/inbox" element={<Inbox />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
 
-        {/* fallback */}
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </BrowserRouter>
-  );
+                {/* fallback */}
+                <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+        </BrowserRouter>
+    );
 }
